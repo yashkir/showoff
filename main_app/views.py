@@ -17,3 +17,9 @@ def collections_detail(request, collection_id):
         'collection': collection,
         'items': items,
     })
+
+def items_detail(request, item_id):
+    item = Item.objects.get(id=item_id)
+    return render(request, 'items/detail.html', {
+        'item': item,
+    })

@@ -10,7 +10,7 @@ Collections
 
 <div class="list-group">
   {% for collection in collections %}
-  <a href="/collections/{{ collection.id }}/"
+  <a href="{% url 'collections_detail' collection.id %}"
      class="list-group-item list-group-item-action">
     {{ collection.name }}
     <i>({{ collection.user }})</i>
