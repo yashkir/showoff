@@ -11,13 +11,21 @@
     <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a class="nav-link" href="{% url 'collections_index' %}">All Collections</a></li>
       <!-- TODO fix hardcoded link here -->
-      <li class="nav-item"><a class="nav-link" href="{% url 'collections_index_by_user' 2 %}">My Collections</a></li>
+      {% if user.id %}
+      <li class="nav-item"><a class="nav-link" href="{% url 'collections_index_by_user' user.id %}">My Collections</a></li>
+      {% endif %}
     </ul>
-    <form class="form-inline" target="{% url 'login' %}">
+    {% if user.is_authenticated %}
+    <span class="text-white mr-2">{{ user.username }}</span>
+    <a href="{% url 'logout' %}" class="btn btn-primary" type="submit">Log Out</a>
+    {% else %}
+    <form class="form-inline" action="{% url 'login' %}" method="POST">
+      {% csrf_token %}
       <input class="form-control mr-2" placeholder="username" type="text" name="username" id="username" />
       <input class="form-control mr-2" placeholder="password" type="password" name="password" id="password" />
       <button class="btn btn-primary" type="submit">Log In</button>
     </form>
+    {% endif %}
   </nav>
   <main class="mt-4 container">
     {% block content %} 

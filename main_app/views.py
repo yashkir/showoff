@@ -1,4 +1,5 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth import authenticate, login, logout
 
 from .models import Collection, Item
 
@@ -27,3 +28,19 @@ def items_detail(request, item_id):
     return render(request, 'items/detail.html', {
         'item': item,
     })
+
+def user_login(request):
+    username = request.POST['username']
+    password = request.POST['password']
+    user = authenticate(request, username=username, password=password)
+
+    if user is not None:
+        result = login(request, user)
+        # TODO redirect to user's collections
+        return redirect('/')
+    else:
+        return redirect('/')
+
+def user_logout(request):
+    logout(request)
+    return redirect('/')
