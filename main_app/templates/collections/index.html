@@ -8,12 +8,16 @@ Collections
   All the Collections
 </h1>
 
-<ul class="list-group">
+<div class="list-group">
   {% for collection in collections %}
-  <li class="list-group-item list-group-item-action">
-  {{ collection.name }}
-</li>
-{% endfor %}
-</ul>
+  <a href="/collections/{{ collection.id }}/"
+     class="list-group-item list-group-item-action">
+    {{ collection.name }}
+    <i>({{ collection.user }})</i>
+  </a>
+  {% empty %}
+  Ther are no collections!
+  {% endfor %}
+</div>
 
 {% endblock %}

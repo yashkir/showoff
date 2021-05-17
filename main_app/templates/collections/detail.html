@@ -1,0 +1,22 @@
+{% extends '../base.html' %}
+{% block title %}
+Collections
+{% endblock %}
+{% block content %}
+
+<h1>
+  {{ collection.name }}
+</h1>
+
+<div class="list-group">
+  {% for item in items %}
+  <a href="/items/{{ item.id }}" class="list-group-item list-group-item-action">
+    <h5>{{ item.name }}</h5>
+    <i>{{ item.description }}</i>
+  </a>
+  {% empty %}
+  Ther are no items here!
+  {% endfor %}
+</div>
+
+{% endblock %}
