@@ -1,13 +1,13 @@
 {% extends '../base.html' %}
 {% block title %}
-Modify a Collection
+Add an Item
 {% endblock %}
 {% block content %}
 
 {% if object %}
-<h1>Edit Collection: {{ object.name }}</h1>
+<h1>Edit Item: {{ object.name }}</h1>
 {% else %}
-<h1>Add a Collection</h1>
+<h1>Add an Item</h1>
 {% endif %}
 
 <form action="" method="POST">
@@ -18,6 +18,5 @@ Modify a Collection
   </table>
   <input type="submit" value="Submit" class="btn btn-primary" />
 </form>
-
 
 {% endblock %}
