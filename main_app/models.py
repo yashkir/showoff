@@ -1,3 +1,4 @@
+from django.shortcuts import reverse
 from django.db import models
 from django.contrib.auth import get_user_model
 
@@ -11,6 +12,9 @@ class Collection(models.Model):
 
     def __str__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('collections_detail', kwargs={'collection_id': self.id})
 
 
 class Item(models.Model):

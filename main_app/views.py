@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 
 from .models import Collection, Item
 
@@ -10,6 +11,20 @@ def home(request):
 def collections_index(request):
     collections = Collection.objects.all()
     return render(request, 'collections/index.html', { 'collections': collections })
+
+class CollectionCreate(CreateView):
+    model = Collection
+    fields ='__all__'
+
+class CollectionUpdate(UpdateView):
+    model = Collection
+    fields ='__all__'
+
+class CollectionDelete(DeleteView):
+    model = Collection
+
+    def get_success_url(self):
+        return reverse('collections_index')
 
 def collections_index_by_user(request, user_id):
     collections = Collection.objects.filter(user=user_id)
