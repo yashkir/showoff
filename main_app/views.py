@@ -5,26 +5,44 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from .models import Collection, Item
 
 
-def home(request):
-    return render(request, 'home.html')
+def add_user_to_form_valid(method):
+    '''Add current user to the form'''
+    def wrapped(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        return method(self, form)
+    return wrapped
 
-def collections_index(request):
-    collections = Collection.objects.all()
-    return render(request, 'collections/index.html', { 'collections': collections })
 
 class CollectionCreate(CreateView):
     model = Collection
-    fields ='__all__'
+    fields = ['name', 'is_public']
+
+    @add_user_to_form_valid
+    def form_valid(self, form):
+        return super().form_valid(form)
 
 class CollectionUpdate(UpdateView):
     model = Collection
-    fields ='__all__'
+    fields = ['name', 'is_public']
+
+    @add_user_to_form_valid
+    def form_valid(self, form):
+        return super().form_valid(form)
 
 class CollectionDelete(DeleteView):
     model = Collection
 
     def get_success_url(self):
         return reverse('collections_index')
+
+
+def home(request):
+    return render(request, 'home.html')
+
+def collections_index(request):
+    collections = Collection.objects.all()
+    return render(request, 'collections/index.html', { 'collections': collections })
 
 def collections_index_by_user(request, user_id):
     collections = Collection.objects.filter(user=user_id)
