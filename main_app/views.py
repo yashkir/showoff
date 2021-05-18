@@ -37,6 +37,7 @@ class CollectionDelete(DeleteView):
     def get_success_url(self):
         return reverse('collections_index')
 
+<<<<<<< HEAD
 class ItemDetail(DetailView):
     model = Item
 
@@ -51,6 +52,8 @@ class ItemUpdate(UpdateView):
 class ItemDelete(DeleteView):
     model = Item
 
+=======
+>>>>>>> 3a2a6bf271c07928724efa43e8426a9fac54c079
 
 def home(request):
     return render(request, 'home.html')
