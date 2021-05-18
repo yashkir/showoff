@@ -10,7 +10,10 @@ urlpatterns = [
     path('collections/create', views.CollectionCreate.as_view(), name='collections_create'),
     path('collections/<int:pk>/update', views.CollectionUpdate.as_view(), name='collections_update'),
     path('collections/<int:pk>/delete', views.CollectionDelete.as_view(), name='collections_delete'),
-    path('items/<int:item_id>/', views.items_detail, name='items_detail'),
+    path('items/create/', views.ItemCreate.as_view(), name='items_create'),
+    path('items/<int:pk>/', views.ItemDetail.as_view(), name='items_detail'),
+    path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='items_update'),
+    path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='items_delete'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
 ]

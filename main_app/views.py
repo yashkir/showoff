@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic import DetailView
 
 from .models import Collection, Item
 
@@ -35,6 +36,20 @@ class CollectionDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('collections_index')
+
+class ItemDetail(DetailView):
+    model = Item
+
+class ItemCreate(CreateView):
+    model = Item
+    fields = '__all__'
+
+class ItemUpdate(UpdateView):
+    model = Item
+    fields = '__all__'
+
+class ItemDelete(DeleteView):
+    model = Item
 
 
 def home(request):

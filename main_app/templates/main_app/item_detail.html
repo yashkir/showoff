@@ -1,0 +1,17 @@
+{% extends '../base.html' %}
+{% block title %}
+Item Detail
+{% endblock %}
+{% block content %}
+
+<h1>
+  {{ item.name }}
+  (<a href="{% url 'collections_detail' item.collection.id %}">{{ item.collection.name }}</a>)
+</h1>
+
+<a class="btn btn-primary btn-round mb-3" href="{% url 'items_update' item.id %}">Edit</a>
+<a class="btn btn-secondary btn-round mb-3" href="{% url 'items_delete' item.id %}">Delete</a>
+
+<p> {{ item.description }} </p>
+
+{% endblock %}

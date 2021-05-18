@@ -25,6 +25,9 @@ class Item(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('items_detail', kwargs={'pk': self.id})
+
 
 class Picture(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
