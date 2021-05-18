@@ -8,8 +8,9 @@ Collection Detail
   {{ collection.name }}
 </h1>
 
-<a class="btn btn-primary btn-round mb-3" href="{% url 'collections_update' collection.id %}">Edit</a>
-<a class="btn btn-primary btn-round mb-3" href="{% url 'collections_delete' collection.id %}">Delete</a>
+<a class="btn btn-primary btn-round mb-3" href="{% url 'items_create' %}">Add Item</a>
+<a class="btn btn-secondary btn-round mb-3" href="{% url 'collections_update' collection.id %}">Edit</a>
+<a class="btn btn-secondary btn-round mb-3" href="{% url 'collections_delete' collection.id %}">Delete</a>
 
 <div class="list-group">
   {% for item in items %}
