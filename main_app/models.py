@@ -4,14 +4,21 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+VISIBILITIES = (
+    ('P', 'Private'),
+    ('F', 'Friends'),
+    ('E', 'Everyone'),
+)
+
 
 class Collection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
     is_public = models.BooleanField()
+    visibility = models.CharField(max_length=1, choices=VISIBILITIES, default=VISIBILITIES[0][0])
 
     def __str__(self):
-        return self.name
+        return f"{self.name} ({self.get_visibility_display()})"
 
     def get_absolute_url(self):
         return reverse('collections_detail', kwargs={'collection_id': self.id})

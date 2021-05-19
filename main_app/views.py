@@ -17,7 +17,7 @@ def add_user_to_form_valid(method):
 
 class CollectionCreate(CreateView):
     model = Collection
-    fields = ['name', 'is_public']
+    fields = ['name', 'visibility']
 
     @add_user_to_form_valid
     def form_valid(self, form):
@@ -25,7 +25,7 @@ class CollectionCreate(CreateView):
 
 class CollectionUpdate(UpdateView):
     model = Collection
-    fields = ['name', 'is_public']
+    fields = ['name', 'visibility']
 
     @add_user_to_form_valid
     def form_valid(self, form):
@@ -56,7 +56,8 @@ def home(request):
     return render(request, 'home.html')
 
 def collections_index(request):
-    collections = Collection.objects.all()
+    '''Only show collections visible to 'E'veryone'''
+    collections = Collection.objects.filter(visibility='E')
     return render(request, 'collections/index.html', { 'collections': collections })
 
 def collections_index_by_user(request, user_id):
