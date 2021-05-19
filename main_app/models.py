@@ -23,6 +23,9 @@ class Collection(models.Model):
     def get_absolute_url(self):
         return reverse('collections_detail', kwargs={'collection_id': self.id})
 
+    class Meta:
+        ordering = ['name']
+
 
 class Item(models.Model):
     collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
@@ -34,6 +37,9 @@ class Item(models.Model):
 
     def get_absolute_url(self):
         return reverse('items_detail', kwargs={'pk': self.id})
+
+    class Meta:
+        ordering = ['name']
 
 
 class Picture(models.Model):
