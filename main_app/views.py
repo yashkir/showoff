@@ -51,6 +51,9 @@ class ItemUpdate(UpdateView):
 class ItemDelete(DeleteView):
     model = Item
 
+    def get_success_url(self):
+        return reverse('collections_detail', kwargs={ 'collection_id': self.object.collection.id })
+
 
 def home(request):
     return render(request, 'home.html')
