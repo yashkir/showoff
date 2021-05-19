@@ -65,10 +65,9 @@ def collections_index_by_user(request, user_id):
 
 def collections_detail(request, collection_id):
     collection = Collection.objects.get(id=collection_id)
-    items = Item.objects.filter(collection=collection_id)
     return render(request, 'collections/detail.html', {
         'collection': collection,
-        'items': items,
+        'items': collection.item_set.all(),
     })
 
 def items_detail(request, item_id):
