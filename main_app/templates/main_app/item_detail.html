@@ -14,4 +14,28 @@ Item Detail
 
 <p> {{ item.description }} </p>
 
+<h4>Comments:</h4>
+{% for comment in comments %}
+<div class="card mb-2">
+  <h5 class="card-header"> {{ comment.user }} </h5>
+  <div class="card-body">
+    <p class="card-text"> {{ comment.text }} </p>
+    {% if comment.user == user %}
+    <!-- TODO dead link -->
+    <a class="card-link" href="#">Delete</a>
+    {% endif %}
+  </div>
+</div>
+{% empty %}
+No Comments!
+{% endfor %}
+
+<form class="m-4" action="{% url 'comments_create' item.id %}" method="post">
+  {% csrf_token %}
+  <div class="form-group">
+  {{ comment_form.text }}
+  </div>
+  <button class="btn btn-primary" type="submit">Post Comment</button>
+</form>
+
 {% endblock %}

@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView
 
-from .models import Collection, Item
+from .models import Collection, Item, Comment
+from .forms import CommentForm
 
 
 def add_user_to_form_valid(method):
@@ -37,8 +38,8 @@ class CollectionDelete(DeleteView):
     def get_success_url(self):
         return reverse('collections_index')
 
-class ItemDetail(DetailView):
-    model = Item
+# class ItemDetail(DetailView):
+    # model = Item
 
 class ItemCreate(CreateView):
     model = Item
@@ -53,6 +54,16 @@ class ItemDelete(DeleteView):
 
     def get_success_url(self):
         return reverse('collections_detail', kwargs={ 'collection_id': self.object.collection.id })
+
+class CommentCreate(CreateView):
+    model = Comment
+    fields = ['text']
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.user = self.request.user
+        obj.item = Item.objects.get(id=self.kwargs['item_id'])
+        return super().form_valid(form)
 
 
 def home(request):
@@ -74,10 +85,14 @@ def collections_detail(request, collection_id):
         'items': collection.item_set.all(),
     })
 
-def items_detail(request, item_id):
-    item = Item.objects.get(id=item_id)
-    return render(request, 'items/detail.html', {
+def items_detail(request, pk):
+    item = Item.objects.get(id=pk)
+    comment_form = CommentForm()
+    print(comment_form)
+    return render(request, 'main_app/item_detail.html', {
         'item': item,
+        'comments': item.comment_set.all(),
+        'comment_form': comment_form,
     })
 
 def user_login(request):

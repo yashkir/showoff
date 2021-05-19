@@ -57,3 +57,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return self.text[:64]
+
+    def get_absolute_url(self):
+        return reverse('items_detail', kwargs={'pk': self.item.id})
