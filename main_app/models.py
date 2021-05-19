@@ -50,6 +50,9 @@ class Picture(models.Model):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('items_detail', kwargs={'pk': self.item.id})
+
 
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)

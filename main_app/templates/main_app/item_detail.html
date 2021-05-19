@@ -11,10 +11,21 @@ Item Detail
 
 <a class="btn btn-primary btn-round mb-3" href="{% url 'items_update' item.id %}">Edit</a>
 <a class="btn btn-secondary btn-round mb-3" href="{% url 'items_delete' item.id %}">Delete</a>
+<a class="btn btn-secondary btn-round mb-3" href="{% url 'pictures_create' item.id %}">Add Picture</a>
 
 <p> {{ item.description }} </p>
 
-<h4>Comments:</h4>
+{% for picture in pictures %}
+<div class="card mb-2" style="width: 18rem">
+  <img class="card-img-top" src="{{ picture.image.url }}" />
+  <div class="card-body">
+    <h5 class="card-text">{{ picture.name }}</h5>
+    <a class="card-link" href="{% url 'pictures_delete' picture.id %}">Delete</a>
+  </div>
+</div>
+{% endfor %}
+
+<h4 class="mt-5">Comments:</h4>
 {% for comment in comments %}
 <div class="card mb-2">
   <h5 class="card-header"> {{ comment.user }} </h5>

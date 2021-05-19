@@ -3,8 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView
 
-from .models import Collection, Item, Comment
-from .forms import CommentForm
+from .models import Collection, Item, Comment, Picture
+from .forms import CommentForm, PictureForm
 
 
 def add_user_to_form_valid(method):
@@ -49,6 +49,11 @@ class ItemUpdate(UpdateView):
     model = Item
     fields = '__all__'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['picture_form'] = PictureForm()
+        return context
+
 class ItemDelete(DeleteView):
     model = Item
 
@@ -64,6 +69,21 @@ class CommentCreate(CreateView):
         obj.user = self.request.user
         obj.item = Item.objects.get(id=self.kwargs['item_id'])
         return super().form_valid(form)
+
+class PictureCreate(CreateView):
+    model = Picture
+    form_class = PictureForm
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.item = Item.objects.get(id=self.kwargs['item_id'])
+        return super().form_valid(form)
+
+class PictureDelete(DeleteView):
+    model = Picture
+
+    def get_success_url(self):
+        return reverse('items_detail', kwargs={ 'pk': self.object.item.id })
 
 
 def home(request):
@@ -91,6 +111,7 @@ def items_detail(request, pk):
     print(comment_form)
     return render(request, 'main_app/item_detail.html', {
         'item': item,
+        'pictures': item.picture_set.all(),
         'comments': item.comment_set.all(),
         'comment_form': comment_form,
     })

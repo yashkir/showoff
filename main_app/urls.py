@@ -18,6 +18,8 @@ urlpatterns = [
     path('items/<int:item_id>/comments/create/',
          views.CommentCreate.as_view(),
          name='comments_create'),
+    path('items/<int:item_id>/pictures/create/', views.PictureCreate.as_view(), name='pictures_create'),
+    path('pictures/<int:pk>/delete/', views.PictureDelete.as_view(), name='pictures_delete'),
     path('login/', views.user_login, name='login'),
     path('logout/', views.user_logout, name='logout'),
 ]
