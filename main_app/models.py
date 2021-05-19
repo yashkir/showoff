@@ -45,6 +45,7 @@ class Item(models.Model):
 class Picture(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
+    image = models.ImageField()
 
     def __str__(self):
         return self.name
