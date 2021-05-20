@@ -1,38 +1,32 @@
 from django.shortcuts import render, redirect, reverse
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import DetailView
+from django.views.generic import DetailView, ListView
 
 from .models import Collection, Item, Comment, Picture
 from .forms import CommentForm, PictureForm
 
 
-def add_user_to_form_valid(method):
-    '''Add current user to the form'''
-    def wrapped(self, form):
-        obj = form.save(commit=False)
-        obj.user = self.request.user
-        return method(self, form)
-    return wrapped
-
-
-class CollectionCreate(CreateView):
+class CollectionCreate(LoginRequiredMixin, CreateView):
     model = Collection
     fields = ['name', 'visibility']
 
-    @add_user_to_form_valid
     def form_valid(self, form):
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
-class CollectionUpdate(UpdateView):
+class CollectionUpdate(LoginRequiredMixin, UpdateView):
     model = Collection
     fields = ['name', 'visibility']
 
-    @add_user_to_form_valid
     def form_valid(self, form):
+        form.instance.user = self.request.user
         return super().form_valid(form)
 
-class CollectionDelete(DeleteView):
+class CollectionDelete(LoginRequiredMixin, DeleteView):
     model = Collection
 
     def get_success_url(self):
@@ -41,11 +35,11 @@ class CollectionDelete(DeleteView):
 # class ItemDetail(DetailView):
     # model = Item
 
-class ItemCreate(CreateView):
+class ItemCreate(LoginRequiredMixin, CreateView):
     model = Item
     fields = '__all__'
 
-class ItemUpdate(UpdateView):
+class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
     fields = '__all__'
 
@@ -54,32 +48,30 @@ class ItemUpdate(UpdateView):
         context['picture_form'] = PictureForm()
         return context
 
-class ItemDelete(DeleteView):
+class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item
 
     def get_success_url(self):
         return reverse('collections_detail', kwargs={ 'collection_id': self.object.collection.id })
 
-class CommentCreate(CreateView):
+class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
     fields = ['text']
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.user = self.request.user
-        obj.item = Item.objects.get(id=self.kwargs['item_id'])
+        form.instance.user = self.request.user
+        form.instance.item = Item.objects.get(id=self.kwargs['item_id'])
         return super().form_valid(form)
 
-class PictureCreate(CreateView):
+class PictureCreate(LoginRequiredMixin, CreateView):
     model = Picture
     form_class = PictureForm
 
     def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.item = Item.objects.get(id=self.kwargs['item_id'])
+        form.instance.item = Item.objects.get(id=self.kwargs['item_id'])
         return super().form_valid(form)
 
-class PictureDelete(DeleteView):
+class PictureDelete(LoginRequiredMixin, DeleteView):
     model = Picture
 
     def get_success_url(self):
@@ -94,10 +86,16 @@ def collections_index(request):
     collections = Collection.objects.filter(visibility='E')
     return render(request, 'collections/index.html', { 'collections': collections })
 
-def collections_index_by_user(request, user_id):
-    collections = Collection.objects.filter(user=user_id)
+@login_required
+def collections_index_current_user(request):
+    collections = Collection.objects.filter(user=request.user)
     return render(request, 'collections/index.html', { 'collections': collections })
 
+def collections_index_by_user(request, user_id):
+    collections = Collection.objects.filter(visibility='E', user=user_id)
+    return render(request, 'collections/index.html', { 'collections': collections })
+
+#TODO check permissions
 def collections_detail(request, collection_id):
     collection = Collection.objects.get(id=collection_id)
     return render(request, 'collections/detail.html', {
@@ -105,6 +103,7 @@ def collections_detail(request, collection_id):
         'items': collection.item_set.all(),
     })
 
+#TODO check permissions
 def items_detail(request, pk):
     item = Item.objects.get(id=pk)
     comment_form = CommentForm()
@@ -116,18 +115,13 @@ def items_detail(request, pk):
         'comment_form': comment_form,
     })
 
-def user_login(request):
-    username = request.POST['username']
-    password = request.POST['password']
-    user = authenticate(request, username=username, password=password)
 
-    if user is not None:
-        result = login(request, user)
-        # TODO redirect to user's collections
-        return redirect('/')
-    else:
-        return redirect('/')
+class SignUp(CreateView):
+    form_class = UserCreationForm
+    success_url ='/collections/mine'
+    template_name = 'registration/signup.html'
 
-def user_logout(request):
-    logout(request)
-    return redirect('/')
+    def form_valid(self, form):
+        super().form_valid(form)
+        login(self.request, form.instance)
+        return redirect(SignUp.success_url)

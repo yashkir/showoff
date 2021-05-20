@@ -23,8 +23,9 @@
       {% csrf_token %}
       <input class="form-control mr-2" placeholder="username" type="text" name="username" id="username" />
       <input class="form-control mr-2" placeholder="password" type="password" name="password" id="password" />
-      <button class="btn btn-primary" type="submit">Log In</button>
+      <button class="btn btn-primary mr-2" type="submit">Log In</button>
     </form>
+    <a class="btn btn-secondary" href="{% url 'signup' %}">Sign Up</a>
     {% endif %}
   </nav>
   <main class="mt-4 container">

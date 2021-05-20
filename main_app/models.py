@@ -14,7 +14,6 @@ VISIBILITIES = (
 class Collection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
-    is_public = models.BooleanField()
     visibility = models.CharField(max_length=1, choices=VISIBILITIES, default=VISIBILITIES[0][0])
 
     def __str__(self):
