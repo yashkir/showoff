@@ -20,7 +20,7 @@ class Collection(models.Model):
         return f"{self.name} ({self.get_visibility_display()})"
 
     def get_absolute_url(self):
-        return reverse('collections_detail', kwargs={'collection_id': self.id})
+        return reverse('collections_detail', kwargs={'pk': self.id})
 
     class Meta:
         ordering = ['name']

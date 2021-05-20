@@ -12,7 +12,7 @@
       <li class="nav-item"><a class="nav-link" href="{% url 'collections_index' %}">All Collections</a></li>
       <!-- TODO fix hardcoded link here -->
       {% if user.is_authenticated %}
-      <li class="nav-item"><a class="nav-link" href="{% url 'collections_index_by_user' user.id %}">My Collections</a></li>
+      <li class="nav-item"><a class="nav-link" href="{% url 'collections_index_current_user' %}">My Collections</a></li>
       {% endif %}
     </ul>
     {% if user.is_authenticated %}

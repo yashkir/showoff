@@ -9,7 +9,7 @@ Collections
 </h1>
 <a class="btn btn-primary btn-round mb-3" href="{% url 'collections_create' %}">Add a Collection</a>
 <div class="list-group">
-  {% for collection in collections %}
+  {% for collection in collection_list %}
   <a href="{% url 'collections_detail' collection.id %}"
      class="list-group-item list-group-item-action">
     {{ collection.name }}

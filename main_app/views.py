@@ -1,13 +1,36 @@
-from django.shortcuts import render, redirect, reverse
-from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
+from django.shortcuts import redirect, reverse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
-from django.views.generic import DetailView, ListView
+from django.views.generic import DetailView, ListView, TemplateView
 
 from .models import Collection, Item, Comment, Picture
 from .forms import CommentForm, PictureForm
+
+
+class Home(TemplateView):
+    template_name = 'home.html'
+
+
+class CollectionList(ListView):
+    model = Collection
+    queryset = Collection.objects.filter(visibility='E')
+
+
+class CollectionListCurrentUser(LoginRequiredMixin, ListView):
+    model = Collection
+
+    def get_queryset(self):
+        return Collection.objects.filter(user=self.request.user)
+
+
+class CollectionDetail(DetailView):
+    model = Collection
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['items'] = Item.objects.filter(collection=self.object)
+        return context
 
 
 class CollectionCreate(LoginRequiredMixin, CreateView):
@@ -35,8 +58,17 @@ class CollectionDelete(LoginRequiredMixin, DeleteView):
         return reverse('collections_index')
 
 
-# class ItemDetail(DetailView):
-    # model = Item
+class ItemDetail(DetailView):
+    model = Item
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update({
+            'pictures': self.object.picture_set.all(),
+            'comments': self.object.comment_set.all(),
+            'comment_form': CommentForm(),
+        })
+        return context
 
 
 class ItemCreate(LoginRequiredMixin, CreateView):
@@ -58,7 +90,7 @@ class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item
 
     def get_success_url(self):
-        return reverse('collections_detail', kwargs={ 'collection_id': self.object.collection.id })
+        return reverse('collections_detail', kwargs={ 'pk': self.object.collection.id })
 
 
 class CommentCreate(LoginRequiredMixin, CreateView):
@@ -85,44 +117,6 @@ class PictureDelete(LoginRequiredMixin, DeleteView):
 
     def get_success_url(self):
         return reverse('items_detail', kwargs={ 'pk': self.object.item.id })
-
-
-def home(request):
-    return render(request, 'home.html')
-
-def collections_index(request):
-    '''Only show collections visible to 'E'veryone'''
-    collections = Collection.objects.filter(visibility='E')
-    return render(request, 'collections/index.html', { 'collections': collections })
-
-@login_required
-def collections_index_current_user(request):
-    collections = Collection.objects.filter(user=request.user)
-    return render(request, 'collections/index.html', { 'collections': collections })
-
-def collections_index_by_user(request, user_id):
-    collections = Collection.objects.filter(visibility='E', user=user_id)
-    return render(request, 'collections/index.html', { 'collections': collections })
-
-#TODO check permissions
-def collections_detail(request, collection_id):
-    collection = Collection.objects.get(id=collection_id)
-    return render(request, 'collections/detail.html', {
-        'collection': collection,
-        'items': collection.item_set.all(),
-    })
-
-#TODO check permissions
-def items_detail(request, pk):
-    item = Item.objects.get(id=pk)
-    comment_form = CommentForm()
-    print(comment_form)
-    return render(request, 'main_app/item_detail.html', {
-        'item': item,
-        'pictures': item.picture_set.all(),
-        'comments': item.comment_set.all(),
-        'comment_form': comment_form,
-    })
 
 
 class SignUp(CreateView):
