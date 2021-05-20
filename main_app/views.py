@@ -103,6 +103,13 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+class CommentDelete(LoginRequiredMixin, DeleteView):
+    model = Comment
+
+    def get_success_url(self):
+        return reverse('items_detail', kwargs={ 'pk': self.object.item.id })
+
+
 class PictureCreate(LoginRequiredMixin, CreateView):
     model = Picture
     form_class = PictureForm

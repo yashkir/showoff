@@ -32,8 +32,7 @@ Item Detail
   <div class="card-body">
     <p class="card-text"> {{ comment.text }} </p>
     {% if comment.user == user %}
-    <!-- TODO dead link -->
-    <a class="card-link" href="#">Delete</a>
+    <a class="card-link" href="{% url 'comments_delete' comment.id %}">Delete</a>
     {% endif %}
   </div>
 </div>

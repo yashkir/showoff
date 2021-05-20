@@ -15,9 +15,8 @@ urlpatterns = [
     path('items/<int:pk>/', views.ItemDetail.as_view(), name='items_detail'),
     path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='items_update'),
     path('items/<int:pk>/delete/', views.ItemDelete.as_view(), name='items_delete'),
-    path('items/<int:item_id>/comments/create/',
-         views.CommentCreate.as_view(),
-         name='comments_create'),
+    path('items/<int:item_id>/comments/create/', views.CommentCreate.as_view(), name='comments_create'),
+    path('comments/<int:pk>/delete', views.CommentDelete.as_view(), name='comments_delete'),
     path('items/<int:item_id>/pictures/create/', views.PictureCreate.as_view(), name='pictures_create'),
     path('pictures/<int:pk>/delete/', views.PictureDelete.as_view(), name='pictures_delete'),
     path('registration/signup', views.SignUp.as_view(), name='signup')
