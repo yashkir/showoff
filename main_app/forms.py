@@ -1,4 +1,3 @@
-from django.forms.widgets import TextInput
 from django.forms import ModelForm
 from .models import Comment, Picture
 
