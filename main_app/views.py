@@ -18,6 +18,7 @@ class CollectionCreate(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class CollectionUpdate(LoginRequiredMixin, UpdateView):
     model = Collection
     fields = ['name', 'visibility']
@@ -26,18 +27,22 @@ class CollectionUpdate(LoginRequiredMixin, UpdateView):
         form.instance.user = self.request.user
         return super().form_valid(form)
 
+
 class CollectionDelete(LoginRequiredMixin, DeleteView):
     model = Collection
 
     def get_success_url(self):
         return reverse('collections_index')
 
+
 # class ItemDetail(DetailView):
     # model = Item
+
 
 class ItemCreate(LoginRequiredMixin, CreateView):
     model = Item
     fields = '__all__'
+
 
 class ItemUpdate(LoginRequiredMixin, UpdateView):
     model = Item
@@ -48,11 +53,13 @@ class ItemUpdate(LoginRequiredMixin, UpdateView):
         context['picture_form'] = PictureForm()
         return context
 
+
 class ItemDelete(LoginRequiredMixin, DeleteView):
     model = Item
 
     def get_success_url(self):
         return reverse('collections_detail', kwargs={ 'collection_id': self.object.collection.id })
+
 
 class CommentCreate(LoginRequiredMixin, CreateView):
     model = Comment
@@ -63,6 +70,7 @@ class CommentCreate(LoginRequiredMixin, CreateView):
         form.instance.item = Item.objects.get(id=self.kwargs['item_id'])
         return super().form_valid(form)
 
+
 class PictureCreate(LoginRequiredMixin, CreateView):
     model = Picture
     form_class = PictureForm
@@ -70,6 +78,7 @@ class PictureCreate(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.item = Item.objects.get(id=self.kwargs['item_id'])
         return super().form_valid(form)
+
 
 class PictureDelete(LoginRequiredMixin, DeleteView):
     model = Picture
