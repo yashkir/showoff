@@ -8,6 +8,20 @@ Collection Detail
   {{ collection.name }}
 </h1>
 
+{% for picture in collection.pictures3_set.all %}
+<div class="card mb-2">
+  <img class="card-img-top" src="{{ picture.url }}">
+</div>
+{% empty %}
+<form class="mb-2" action="{% url 'collections_add_s3_picture' collection.id %}" method="POST" enctype="multipart/form-data">
+  {% csrf_token %}
+  <div class="form-group">
+    <input class="form-control-file" type="file" name="file">
+  </div>
+  <input class="btn btn-primary" type="submit" value="Upload Cover Photo">
+</form>
+{% endfor %}
+
 <a class="btn btn-primary btn-round mb-3" href="{% url 'items_create' %}">Add Item</a>
 <a class="btn btn-secondary btn-round mb-3" href="{% url 'collections_update' collection.id %}">Edit</a>
 <a class="btn btn-secondary btn-round mb-3" href="{% url 'collections_delete' collection.id %}">Delete</a>

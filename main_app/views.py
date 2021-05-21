@@ -4,8 +4,15 @@ from django.contrib.auth.forms import UserCreationForm
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import DetailView, ListView, TemplateView
 
-from .models import Collection, Item, Comment, Picture
+import os
+import boto3
+import uuid
+
+from .models import Collection, Item, Comment, Picture, PictureS3
 from .forms import CommentForm, PictureForm
+
+S3_BASE_URL = os.getenv('S3_BASE_URL')
+BUCKET = os.getenv('BUCKET')
 
 
 class Home(TemplateView):
@@ -135,3 +142,18 @@ class SignUp(CreateView):
         super().form_valid(form)
         login(self.request, form.instance)
         return redirect(SignUp.success_url)
+
+
+def add_s3_picture(request, collection_id):
+    file = request.FILES.get('file', None)
+
+    if file:
+        s3 = boto3.client('s3')
+        key = uuid.uuid4().hex[:6] + file.name[file.name.rfind('.'):]
+
+        s3.upload_fileobj(file, BUCKET, key)
+        url = f"{S3_BASE_URL}{BUCKET}/{key}"
+        pictures3 = PictureS3(collection_id=collection_id, url=url)
+        pictures3.save()
+
+    return redirect('collections_detail', pk=collection_id)
