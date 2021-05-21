@@ -1,0 +1,9 @@
+localhost
+
+@notStatic {
+    not path /static/* /media/*
+}
+
+reverse_proxy @notStatic localhost:8000
+
+file_server
