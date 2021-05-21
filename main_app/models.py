@@ -13,6 +13,10 @@ VISIBILITIES = (
 )
 
 
+def make_unique_picture_filename(instance, filename):
+    return uuid.uuid4().hex[:6] + filename[filename.rfind('.'):]
+
+
 class Collection(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
@@ -46,22 +50,13 @@ class Item(models.Model):
 class Picture(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
-    image = models.ImageField(upload_to=
-      lambda instance, filename: uuid.uuid4().hex[:6] + filename[filename.rfind('.'):])
+    image = models.ImageField(upload_to=make_unique_picture_filename)
 
     def __str__(self):
         return self.name
 
     def get_absolute_url(self):
         return reverse('items_detail', kwargs={'pk': self.item.id})
-
-
-class PictureS3(models.Model):
-    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
-    url = models.CharField(max_length=200)
-
-    def __str__(self):
-        return f"Photo for collection {self.collection.id} @{self.url}"
 
 
 class Comment(models.Model):

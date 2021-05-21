@@ -11,7 +11,6 @@ urlpatterns = [
     path('collections/create', views.CollectionCreate.as_view(), name='collections_create'),
     path('collections/<int:pk>/update', views.CollectionUpdate.as_view(), name='collections_update'),
     path('collections/<int:pk>/delete', views.CollectionDelete.as_view(), name='collections_delete'),
-    path('collections/<int:collection_id>/add_s3_picture', views.add_s3_picture, name='collections_add_s3_picture'),
     path('items/create/', views.ItemCreate.as_view(), name='items_create'),
     path('items/<int:pk>/', views.ItemDetail.as_view(), name='items_detail'),
     path('items/<int:pk>/update/', views.ItemUpdate.as_view(), name='items_update'),
