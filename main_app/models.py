@@ -2,6 +2,8 @@ from django.shortcuts import reverse
 from django.db import models
 from django.contrib.auth import get_user_model
 
+import uuid
+
 User = get_user_model()
 
 VISIBILITIES = (
@@ -44,7 +46,8 @@ class Item(models.Model):
 class Picture(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
     name = models.CharField(max_length=64)
-    image = models.ImageField()
+    image = models.ImageField(upload_to=
+      lambda instance, filename: uuid.uuid4().hex[:6] + filename[filename.rfind('.'):])
 
     def __str__(self):
         return self.name
