@@ -53,6 +53,14 @@ class Picture(models.Model):
         return reverse('items_detail', kwargs={'pk': self.item.id})
 
 
+class PictureS3(models.Model):
+    collection = models.ForeignKey(Collection, on_delete=models.CASCADE)
+    url = models.CharField(max_length=200)
+
+    def __str__(self):
+        return f"Photo for collection {self.collection.id} @{self.url}"
+
+
 class Comment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
